@@ -24,6 +24,12 @@ biases = {
     # (10, )
     'out': tf.Variable(tf.constant(0.1, shape=[n_classes, ]))
 }
+
+
+#input
+xs = tf.placeholder(tf.float32, [None, n_steps, n_inputs])
+ys = tf.placeholder(tf.float32, [None, n_classes])
+
 #RNN
 def RNN(X, weights, biases):#输入，权重，偏置
     X = tf.reshape(X, [-1, 28])#(128 * 28, 28 )
@@ -36,12 +42,9 @@ def RNN(X, weights, biases):#输入，权重，偏置
     results = tf.matmul(outputs[-1], weights['out']) + biases['out']
     #results = tf.matmul(final_state[1], weights['out']) + biases['out']#应该是仅仅考虑了短期记忆
     return results
-
-#input
-xs = tf.placeholder(tf.float32, [None, n_steps, n_inputs])
-ys = tf.placeholder(tf.float32, [None, n_classes])
 #network
 pred = RNN(xs, weights, biases)
+
 #compile network
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=ys))
 train_op = tf.train.AdamOptimizer(lr).minimize(cost)
